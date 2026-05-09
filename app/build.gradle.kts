@@ -48,6 +48,9 @@ dependencies {
     implementation(libs.androidx.compose.ui.graphics)
     implementation(libs.androidx.compose.ui.tooling.preview)
     implementation(libs.androidx.compose.material3)
+    val nav_version = "2.9.7"
+    // Jetpack Compose integration
+    implementation("androidx.navigation:navigation-compose:$nav_version")
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
