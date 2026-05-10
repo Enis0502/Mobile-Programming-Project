@@ -13,6 +13,7 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -23,29 +24,25 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.ViewModel
 import com.example.mobileprogrammingproject.presentation.data.Playlist
 import com.example.mobileprogrammingproject.model.playlistsHardcoded
 import com.example.mobileprogrammingproject.presentation.ui.components.AppOutlinedTextField
 import com.example.mobileprogrammingproject.presentation.ui.components.PlaylistCard
 import com.example.mobileprogrammingproject.presentation.ui.components.SetBackgroundGradient
+import com.example.mobileprogrammingproject.presentation.view_model.playlistDetails.PlaylistDetailsViewModel
 
 @Composable
-fun PlaylistDetailScreen(){
-    var searchQuery by remember { mutableStateOf("")}
+fun PlaylistDetailScreen(viewModel: PlaylistDetailsViewModel = hiltViewModel()){
 
-    val filteredPlaylists by remember (searchQuery){
-        derivedStateOf {
-            playlistsHardcoded.filter { it.title.contains(searchQuery, ignoreCase = true) }
-        }
-    }
+    val state by viewModel.uiState.collectAsState()
 
     PlaylistDetailDisplay(
-        searchQuery = searchQuery,
-        onValueChange = {searchQuery = it},
-        playlists = filteredPlaylists
+        searchQuery = state.searchQuery,
+        onValueChange = {viewModel.onSearchQuery(it)},
+        playlists = viewModel.getFilteredPlaylists()
     )
-
-
 }
 
 @Composable

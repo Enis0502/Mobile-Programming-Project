@@ -28,16 +28,25 @@ fun AppNavGraph(
             AboutUsScreen()
         }
 
-        composable(Screen.Dashboard.route) {
+        composable(
+            route = Screen.Dashboard.route
+        ) { backStackEntry ->
+
+            val firstName =
+                backStackEntry.arguments?.getString("firstName") ?: ""
+
+            val lastName =
+                backStackEntry.arguments?.getString("lastName") ?: ""
+
             DashboardScreen(
-                firstName = "",
-                lastName = "",
+                firstName = firstName,
+                lastName = lastName,
                 onNavigate = { navController.navigate(it) }
             )
         }
 
         composable(Screen.Login.route) {
-            LogInScreen()
+            LogInScreen(navController)
         }
 
         composable(Screen.PlaylistDetails.route) {

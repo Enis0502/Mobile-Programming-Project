@@ -16,6 +16,8 @@ import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -30,18 +32,26 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.mobileprogrammingproject.R
 import com.example.mobileprogrammingproject.presentation.navigation.Screen
 import com.example.mobileprogrammingproject.presentation.theme.LightBlue400
 import com.example.mobileprogrammingproject.presentation.ui.components.AppOutlinedTextField
+import com.example.mobileprogrammingproject.presentation.view_model.auth.login.LoginUiState
+import com.example.mobileprogrammingproject.presentation.view_model.auth.registration.RegistrationNavigationEvent
+import com.example.mobileprogrammingproject.presentation.view_model.auth.registration.RegistrationUiState
+import com.example.mobileprogrammingproject.presentation.view_model.auth.registration.RegistrationViewModel
 import kotlinx.coroutines.launch
 
 @Composable
-fun SignInScreen(navController: NavController){
+fun SignInScreen(navController: NavController, viewModel: RegistrationViewModel = hiltViewModel()){
     val snackBarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
 
+    val uiState by viewModel.uiState.collectAsState()
     var name by remember { mutableStateOf("") }
     var lastName by remember { mutableStateOf("") }
     var emailInput by remember { mutableStateOf("")}
@@ -53,6 +63,31 @@ fun SignInScreen(navController: NavController){
             lastName. isNotBlank() &&
             emailInput.isNotBlank() &&
             passwordInput.isNotBlank()
+        }
+    }
+
+    LaunchedEffect(Unit) {
+        viewModel.navigationEvent.collect { event ->
+            when(event){
+                RegistrationNavigationEvent.Navigate -> {
+                    navController.navigate(
+                        Screen.Dashboard.route
+                    )
+                }
+                else -> {}
+            }
+        }
+    }
+
+    LaunchedEffect(uiState) {
+        when(uiState){
+            is RegistrationUiState.Error -> {
+                snackBarHostState.showSnackbar(
+                    (uiState as RegistrationUiState.Error).message
+                )
+                viewModel.resetUiState()
+            }
+            else -> {}
         }
     }
 
@@ -69,15 +104,7 @@ fun SignInScreen(navController: NavController){
         onEmailChange = {emailInput = it},
         onPasswordChange = {passwordInput = it},
         onSignInClick = {
-            navController.navigate(
-                navController.navigate(Screen.Dashboard.route)
-            )
-            scope.launch {snackBarHostState.showSnackbar("Successfully signed in!")}
-            name = ""
-            lastName = ""
-            emailInput = ""
-            passwordInput = ""
-
+            viewModel.onRegisterClick(name, lastName, emailInput, passwordInput)
         }
     )
 

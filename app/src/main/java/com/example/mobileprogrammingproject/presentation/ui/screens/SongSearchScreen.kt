@@ -20,6 +20,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -32,17 +33,21 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.mobileprogrammingproject.presentation.data.Song
 import com.example.mobileprogrammingproject.model.songs
 import com.example.mobileprogrammingproject.presentation.ui.components.AppOutlinedTextField
 import com.example.mobileprogrammingproject.presentation.ui.components.SetBackgroundGradient
 import com.example.mobileprogrammingproject.presentation.ui.components.SongDetails
+import com.example.mobileprogrammingproject.presentation.view_model.songSearch.SongSearchViewModel
 import kotlinx.coroutines.launch
 
 @Composable
-fun SongDetailsScreen(){
+fun SongDetailsScreen(viewModel: SongSearchViewModel = hiltViewModel()){
     val listState = rememberLazyListState()
     val scope = rememberCoroutineScope()
+
+    val state by viewModel.uiState.collectAsState()
 
     var expandedSongId by remember { mutableStateOf<Int?>(null) }
 
@@ -72,9 +77,9 @@ fun SongDetailsScreen(){
     ) { padding ->
 
         SongDetailsDisplay(
-            searchQuery = searchQuery,
-            onValueChange = { searchQuery = it },
-            displayedSongs = filteredSongs,
+            searchQuery = state.searchQuery,
+            onValueChange = { viewModel.searchSongs(it) },
+            displayedSongs = viewModel.filterSongs(),
             isExpanded = expandedSongId,
             onExpandClick = { id ->
                 expandedSongId = if (expandedSongId == id) null else id

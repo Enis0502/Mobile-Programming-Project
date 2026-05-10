@@ -15,6 +15,8 @@ import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -29,22 +31,55 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
+import androidx.navigation.NavHostController
 import com.example.mobileprogrammingproject.R
+import com.example.mobileprogrammingproject.presentation.navigation.Screen
 import com.example.mobileprogrammingproject.presentation.theme.LightBlue400
 import com.example.mobileprogrammingproject.presentation.ui.components.AppOutlinedTextField
+import com.example.mobileprogrammingproject.presentation.view_model.auth.login.LoginNavigationEvent
+import com.example.mobileprogrammingproject.presentation.view_model.auth.login.LoginUiState
+import com.example.mobileprogrammingproject.presentation.view_model.auth.login.LoginViewModel
 import kotlinx.coroutines.launch
 
 @Composable
-fun LogInScreen(){
+fun LogInScreen(navController: NavController, viewModel: LoginViewModel = hiltViewModel()){
     val snackBarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
 
+    val uiState by viewModel.uiState.collectAsState()
     var emailInput by remember { mutableStateOf("")}
     var passwordInput by remember { mutableStateOf("")}
 
     val isFormValid by remember (emailInput, passwordInput){
         derivedStateOf {
             emailInput.isNotBlank() && passwordInput.isNotBlank()
+        }
+    }
+
+    LaunchedEffect(Unit) {
+        viewModel.navigationEvent.collect { event ->
+            when(event){
+                LoginNavigationEvent.Navigate -> {
+                    navController.navigate(
+                        Screen.Dashboard.route
+                    )
+                }
+                else -> {}
+            }
+        }
+    }
+
+    LaunchedEffect(uiState) {
+        when(uiState){
+            is LoginUiState.Error -> {
+                snackBarHostState.showSnackbar(
+                    (uiState as LoginUiState.Error).message
+                )
+                viewModel.resetUiState()
+            }
+            else -> {}
         }
     }
 
@@ -56,11 +91,7 @@ fun LogInScreen(){
         isFormValid = isFormValid,
         snackBarHostState = snackBarHostState,
         onLoginClick = {
-            scope.launch {
-                snackBarHostState.showSnackbar("Successfully logged in")
-            }
-            emailInput = ""
-            passwordInput = ""
+            viewModel.onLoginClick(emailInput, passwordInput)
         }
     )
 }
@@ -157,6 +188,7 @@ fun LogInDisplay(
 @Composable
 fun LogInScreenPreview(){
     MaterialTheme{
-        LogInScreen()
+
+        //LogInScreen()
     }
 }
