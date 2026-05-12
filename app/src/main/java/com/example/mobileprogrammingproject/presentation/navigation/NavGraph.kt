@@ -8,6 +8,7 @@ import androidx.navigation.compose.composable
 import com.example.mobileprogrammingproject.presentation.ui.screens.PlaylistDetailScreen
 import com.example.mobileprogrammingproject.presentation.ui.screens.SongDetailsScreen
 import com.example.mobileprogrammingproject.presentation.ui.screens.AboutUsScreen
+import com.example.mobileprogrammingproject.presentation.ui.screens.DashboardDisplay
 import com.example.mobileprogrammingproject.presentation.ui.screens.DashboardScreen
 import com.example.mobileprogrammingproject.presentation.ui.screens.LogInScreen
 import com.example.mobileprogrammingproject.presentation.ui.screens.RecentlyPlayedScreen
@@ -38,7 +39,7 @@ fun AppNavGraph(
             val lastName =
                 backStackEntry.arguments?.getString("lastName") ?: ""
 
-            DashboardScreen(
+            DashboardDisplay(
                 firstName = firstName,
                 lastName = lastName,
                 onNavigate = { navController.navigate(it) }

@@ -31,6 +31,7 @@ import com.example.mobileprogrammingproject.model.playlistsHardcoded
 import com.example.mobileprogrammingproject.presentation.ui.components.AppOutlinedTextField
 import com.example.mobileprogrammingproject.presentation.ui.components.PlaylistCard
 import com.example.mobileprogrammingproject.presentation.ui.components.SetBackgroundGradient
+import com.example.mobileprogrammingproject.presentation.view_model.playlistDetails.PlaylistDetailsUiState
 import com.example.mobileprogrammingproject.presentation.view_model.playlistDetails.PlaylistDetailsViewModel
 
 @Composable
@@ -38,11 +39,31 @@ fun PlaylistDetailScreen(viewModel: PlaylistDetailsViewModel = hiltViewModel()){
 
     val state by viewModel.uiState.collectAsState()
 
-    PlaylistDetailDisplay(
-        searchQuery = state.searchQuery,
-        onValueChange = {viewModel.onSearchQuery(it)},
-        playlists = viewModel.getFilteredPlaylists()
-    )
+    when (state) {
+
+        is PlaylistDetailsUiState.Init -> {
+            // optional loading screen or empty
+        }
+
+        is PlaylistDetailsUiState.Loading -> {
+            // show loader if needed
+        }
+
+        is PlaylistDetailsUiState.Success -> {
+            val successState = state as PlaylistDetailsUiState.Success
+
+            PlaylistDetailDisplay(
+                searchQuery = successState.searchQuery,
+                onValueChange = { viewModel.onSearchQuery(it) },
+                playlists = successState.playlists
+            )
+        }
+
+        is PlaylistDetailsUiState.Error -> {
+            val errorState = state as PlaylistDetailsUiState.Error
+            // show error UI if needed
+        }
+    }
 }
 
 @Composable

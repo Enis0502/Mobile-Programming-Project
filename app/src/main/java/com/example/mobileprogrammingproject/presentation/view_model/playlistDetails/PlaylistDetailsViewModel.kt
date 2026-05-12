@@ -11,8 +11,9 @@ import javax.inject.Inject
 
 @HiltViewModel
 class PlaylistDetailsViewModel @Inject constructor() : ViewModel(){
-    private val _uiState = MutableStateFlow(
-        PlaylistDetailsUiState(
+    private val _uiState = MutableStateFlow<PlaylistDetailsUiState>(
+        PlaylistDetailsUiState.Success(
+            searchQuery = "",
             playlists = playlistsHardcoded
         )
     )
@@ -20,14 +21,16 @@ class PlaylistDetailsViewModel @Inject constructor() : ViewModel(){
     val uiState: StateFlow<PlaylistDetailsUiState> = _uiState
 
     fun onSearchQuery(query: String){
-        _uiState.value = _uiState.value.copy(
-            searchQuery = query
-        )
-    }
-
-    fun getFilteredPlaylists(): List<Playlist>{
-        return _uiState.value.playlists.filter {
-            it.title.contains(_uiState.value.searchQuery, ignoreCase = true)
+        val current = _uiState.value
+        if(current is PlaylistDetailsUiState.Success){
+            val filtered = playlistsHardcoded.filter{
+                it.title.contains(query, ignoreCase = true)
+            }
+            _uiState.value = current.copy(
+                searchQuery = query,
+                playlists = filtered
+            )
         }
+
     }
 }

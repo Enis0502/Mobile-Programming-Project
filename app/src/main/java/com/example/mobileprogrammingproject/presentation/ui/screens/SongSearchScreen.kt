@@ -39,6 +39,8 @@ import com.example.mobileprogrammingproject.model.songs
 import com.example.mobileprogrammingproject.presentation.ui.components.AppOutlinedTextField
 import com.example.mobileprogrammingproject.presentation.ui.components.SetBackgroundGradient
 import com.example.mobileprogrammingproject.presentation.ui.components.SongDetails
+import com.example.mobileprogrammingproject.presentation.view_model.playlistDetails.PlaylistDetailsUiState
+import com.example.mobileprogrammingproject.presentation.view_model.songSearch.SongSearchUiState
 import com.example.mobileprogrammingproject.presentation.view_model.songSearch.SongSearchViewModel
 import kotlinx.coroutines.launch
 
@@ -51,48 +53,50 @@ fun SongDetailsScreen(viewModel: SongSearchViewModel = hiltViewModel()){
 
     var expandedSongId by remember { mutableStateOf<Int?>(null) }
 
-    var searchQuery by remember { mutableStateOf("")}
+    when(state){
+        is SongSearchUiState.Init -> {
 
-    val filteredSongs by remember (searchQuery){
-        derivedStateOf {
-            songs.filter { it.title.contains(searchQuery, ignoreCase = true)}
         }
-    }
-    Scaffold(
-        floatingActionButton = {
-            FloatingActionButton(
-                onClick = {
-                    scope.launch {
-                        listState.animateScrollToItem(0)
+        is SongSearchUiState.Success -> {
+            val successState = state as SongSearchUiState.Success
+            Scaffold(
+                floatingActionButton = {
+                    FloatingActionButton(
+                        onClick = {
+                            scope.launch {
+                                listState.animateScrollToItem(0)
+                            }
+                        }
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.KeyboardArrowUp,
+                            contentDescription = "Scroll to top",
+                            modifier = Modifier.size(30.dp)
+                        )
                     }
                 }
-            ) {
-                Icon(
-                    imageVector = Icons.Default.KeyboardArrowUp,
-                    contentDescription = "Scroll to top",
-                    modifier = Modifier.size(30.dp)
+            ) { padding ->
+
+                SongDetailsDisplay(
+                    searchQuery = successState.searchQuery ,
+                    onValueChange = { viewModel.searchSongs(it) },
+                    displayedSongs = successState.songList,
+                    isExpanded = expandedSongId,
+                    onExpandClick = { id ->
+                        expandedSongId = if (expandedSongId == id) null else id
+                    },
+                    listState = listState,
+                    onScrollToTop = {
+                        scope.launch {
+                            listState.animateScrollToItem(0)
+                        }
+                    },
+                    modifier = Modifier.padding(padding)
                 )
             }
-        }
-    ) { padding ->
-
-        SongDetailsDisplay(
-            searchQuery = state.searchQuery,
-            onValueChange = { viewModel.searchSongs(it) },
-            displayedSongs = viewModel.filterSongs(),
-            isExpanded = expandedSongId,
-            onExpandClick = { id ->
-                expandedSongId = if (expandedSongId == id) null else id
-            },
-            listState = listState,
-            onScrollToTop = {
-                scope.launch {
-                    listState.animateScrollToItem(0)
-                }
-            },
-            modifier = Modifier.padding(padding)
-        )
+        }else -> {}
     }
+
 }
 
 @Composable
