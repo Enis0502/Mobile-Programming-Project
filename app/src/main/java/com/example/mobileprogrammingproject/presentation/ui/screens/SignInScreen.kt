@@ -69,9 +69,9 @@ fun SignInScreen(navController: NavController, viewModel: RegistrationViewModel 
     LaunchedEffect(Unit) {
         viewModel.navigationEvent.collect { event ->
             when(event){
-                RegistrationNavigationEvent.Navigate -> {
+                is RegistrationNavigationEvent.Navigate -> {
                     navController.navigate(
-                        Screen.Dashboard.route
+                        Screen.Dashboard.createRoute(event.firstName, event.lastName, event.userId)
                     )
                 }
                 else -> {}

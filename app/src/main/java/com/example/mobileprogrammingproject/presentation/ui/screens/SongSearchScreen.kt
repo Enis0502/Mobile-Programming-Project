@@ -35,7 +35,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.mobileprogrammingproject.presentation.data.Song
-import com.example.mobileprogrammingproject.model.songs
 import com.example.mobileprogrammingproject.presentation.ui.components.AppOutlinedTextField
 import com.example.mobileprogrammingproject.presentation.ui.components.SetBackgroundGradient
 import com.example.mobileprogrammingproject.presentation.ui.components.SongDetails

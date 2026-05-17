@@ -1,9 +1,9 @@
 package com.example.mobileprogrammingproject.presentation.ui.components
 
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.List
+import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -26,18 +26,6 @@ fun BottomNavBar(navController: NavHostController) {
 
     NavigationBar {
         NavigationBarItem(
-            selected = currentRoute == Screen.Dashboard.route,
-            onClick = {
-                navController.navigate(Screen.Dashboard.route) {
-                    popUpTo(navController.graph.startDestinationId)
-                    launchSingleTop = true
-                }
-            },
-            icon = { Icon(Icons.Default.Home, contentDescription = "Dashboard") },
-            label = { Text("Dashboard") }
-        )
-
-        NavigationBarItem(
             selected = currentRoute == Screen.PlaylistDetails.route,
             onClick = {
                 navController.navigate(Screen.PlaylistDetails.route) {
@@ -47,6 +35,18 @@ fun BottomNavBar(navController: NavHostController) {
             },
             icon = { Icon(Icons.Default.List, contentDescription = "Playlist") },
             label = { Text("Playlist") }
+        )
+
+        NavigationBarItem(
+            selected = currentRoute == Screen.SongSearch.route,
+            onClick = {
+                navController.navigate(Screen.SongSearch.route) {
+                    popUpTo(navController.graph.startDestinationId)
+                    launchSingleTop = true
+                }
+            },
+            icon = { Icon(Icons.Default.PlayArrow, contentDescription = "Songs") },
+            label = { Text("Songs") }
         )
 
         NavigationBarItem(
@@ -77,8 +77,8 @@ fun BottomNavBar(navController: NavHostController) {
 
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
-fun BottomNavBarPreview(){
-    MaterialTheme{
+fun BottomNavBarPreview() {
+    MaterialTheme {
         val navController = rememberNavController()
         BottomNavBar(navController)
     }

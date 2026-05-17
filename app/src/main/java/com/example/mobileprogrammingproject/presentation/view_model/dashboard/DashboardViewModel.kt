@@ -15,14 +15,11 @@ class DashboardViewModel @Inject constructor() : ViewModel(){
 
     val uiState: StateFlow<DashboardUiState> = _uiState
 
-    init {
-        loadUser()
-    }
-
-    private fun loadUser(){
+    fun loadUser(firstName: String, lastName: String, userId: Int) {
         _uiState.value = DashboardUiState.Success(
-            firstName = "Enis",
-            lastName =  "Bulbulusic"
+            firstName = firstName,
+            lastName = lastName,
+            userId = userId
         )
     }
 

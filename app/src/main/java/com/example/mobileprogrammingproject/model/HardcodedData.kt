@@ -223,19 +223,19 @@ val options = listOf<String>("Total playlists", "Total songs", "Recently played"
 
 
 // list of all songs that will be rendered to SongSearchScreen
-val songs = listOf(
-    Song(2001, "Dale", "Jala Brat", "2:17"),
-    Song(2002, "Toronto", "Jala Brat & Buba Corelli", "2:08"),
-    Song(2003, "Babylon", "Jala Brat & Buba Corelli", "2:24"),
-    Song(2004, "Tec-9", "Jala Brat & Buba Corelli", "2:37"),
-    Song(101, "Da šutiš", "Dino Merlin", "4:12"),
-    Song(102, "Kad si rekla da me voliš", "Dino Merlin", "4:05"),
-    Song(103, "Sve je laž", "Dino Merlin", "3:58"),
-    Song(104, "Nešto lijepo treba da se desi", "Dino Merlin", "4:20"),
-    Song(105, "Sanjao sam noćas da te nemam", "Dino Merlin", "4:33"),
-    Song(106, "Ti i ja", "Dino Merlin", "3:47"),
-    Song(107, "Ljubav nije paradajz", "Dino Merlin", "3:41"),
-    Song(108, "Zauvijek moja", "Dino Merlin", "4:10"),
-    Song(109, "Umri prije smrti", "Dino Merlin", "4:25"),
-    Song(110, "Odlaziš", "Dino Merlin", "3:52")
-)
+//val songs = listOf(
+//    Song(2001, "Dale", "Jala Brat", "2:17"),
+//    Song(2002, "Toronto", "Jala Brat & Buba Corelli", "2:08"),
+//    Song(2003, "Babylon", "Jala Brat & Buba Corelli", "2:24"),
+//    Song(2004, "Tec-9", "Jala Brat & Buba Corelli", "2:37"),
+//    Song(101, "Da šutiš", "Dino Merlin", "4:12"),
+//    Song(102, "Kad si rekla da me voliš", "Dino Merlin", "4:05"),
+//    Song(103, "Sve je laž", "Dino Merlin", "3:58"),
+//    Song(104, "Nešto lijepo treba da se desi", "Dino Merlin", "4:20"),
+//    Song(105, "Sanjao sam noćas da te nemam", "Dino Merlin", "4:33"),
+//    Song(106, "Ti i ja", "Dino Merlin", "3:47"),
+//    Song(107, "Ljubav nije paradajz", "Dino Merlin", "3:41"),
+//    Song(108, "Zauvijek moja", "Dino Merlin", "4:10"),
+//    Song(109, "Umri prije smrti", "Dino Merlin", "4:25"),
+//    Song(110, "Odlaziš", "Dino Merlin", "3:52")
+//)

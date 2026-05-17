@@ -2,6 +2,8 @@ package com.example.mobileprogrammingproject.presentation.view_model.auth.regist
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.mobileprogrammingproject.model.data.local.entity.UserEntity
+import com.example.mobileprogrammingproject.model.data.repository.mappers.UserRepository
 import com.example.mobileprogrammingproject.presentation.view_model.auth.login.LoginUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
@@ -14,7 +16,9 @@ import javax.inject.Inject
 
 
 @HiltViewModel
-class RegistrationViewModel @Inject constructor() : ViewModel() {
+class RegistrationViewModel @Inject constructor(
+    private val repository: UserRepository
+) : ViewModel() {
     private val _uiState = MutableStateFlow<RegistrationUiState>(
         RegistrationUiState.Init
     )
@@ -27,28 +31,37 @@ class RegistrationViewModel @Inject constructor() : ViewModel() {
 
     val navigationEvent : Flow<RegistrationNavigationEvent> = _navigationEvent.receiveAsFlow()
 
+
     fun onRegisterClick(
         name: String,
         lastname: String,
         email: String,
         password: String
-    ){
-
+    ) {
         viewModelScope.launch {
             _uiState.value = RegistrationUiState.Loading
 
-            if(
-                name.isNotBlank() &&
-                lastname.isNotBlank() &&
-                email.isNotBlank() &&
-                password.isNotBlank()
-                ){
+            if (name.isNotBlank() && lastname.isNotBlank() &&
+                email.isNotBlank() && password.isNotBlank()
+            ) {
+                val user = UserEntity(
+                    firstName = name,
+                    lastName = lastname,
+                    email = email,
+                    password = password
+                )
+
+                val newUserId = repository.insertUser(user)
                 _uiState.value = RegistrationUiState.Success
 
                 _navigationEvent.send(
-                    RegistrationNavigationEvent.Navigate
+                    RegistrationNavigationEvent.Navigate(
+                        firstName = name,
+                        lastName = lastname,
+                        userId = newUserId.toInt()
+                    )
                 )
-            }else{
+            } else {
                 _uiState.value = RegistrationUiState.Error(
                     "Registration failed, all fields required."
                 )

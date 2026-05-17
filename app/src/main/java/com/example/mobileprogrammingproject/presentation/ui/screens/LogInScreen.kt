@@ -61,9 +61,9 @@ fun LogInScreen(navController: NavController, viewModel: LoginViewModel = hiltVi
     LaunchedEffect(Unit) {
         viewModel.navigationEvent.collect { event ->
             when(event){
-                LoginNavigationEvent.Navigate -> {
+                is LoginNavigationEvent.Navigate -> {
                     navController.navigate(
-                        Screen.Dashboard.route
+                        Screen.Dashboard.createRoute(event.firstName, event.lastName, event.userId)
                     )
                 }
                 else -> {}

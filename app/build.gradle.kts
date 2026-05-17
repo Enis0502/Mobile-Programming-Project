@@ -62,6 +62,12 @@ dependencies {
 
     // Hilt + Jetpack Navigation Compose integration
     implementation("androidx.hilt:hilt-navigation-compose:1.1.0")
+
+    val roomVersion = "2.8.4" //use the appropriate version number
+    implementation("androidx.room:room-runtime:$roomVersion")
+    implementation("androidx.room:room-ktx:$roomVersion")
+    ksp("androidx.room:room-compiler:$roomVersion")
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

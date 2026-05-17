@@ -7,10 +7,11 @@ sealed interface DashboardUiState{
 
     data class Success(
         val firstName: String,
-        val lastName: String
+        val lastName: String,
+        val userId: Int
     ): DashboardUiState
 
     data class Error(
         val message: String
-    )
+    ) : DashboardUiState
 }

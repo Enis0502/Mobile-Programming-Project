@@ -1,7 +1,9 @@
 package com.example.mobileprogrammingproject.presentation.view_model.auth.login
 
+import com.example.mobileprogrammingproject.model.data.local.db.AppDatabase
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.mobileprogrammingproject.model.data.repository.mappers.UserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
@@ -12,7 +14,9 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class LoginViewModel @Inject constructor() : ViewModel() {
+class LoginViewModel @Inject constructor(
+    private val repository: UserRepository
+) : ViewModel() {
     private val _uiState = MutableStateFlow<LoginUiState>(
         LoginUiState.Init
     )
@@ -25,17 +29,21 @@ class LoginViewModel @Inject constructor() : ViewModel() {
 
     val navigationEvent : Flow<LoginNavigationEvent> = _navigationEvent.receiveAsFlow()
 
-    fun onLoginClick(email: String, password: String){
+    fun onLoginClick(email: String, password: String) {
         viewModelScope.launch {
             _uiState.value = LoginUiState.Loading
 
-            if (email == "test@gmail.com" && password == "123456"){
+            val user = repository.login(email, password)
+            if (user != null) {
                 _uiState.value = LoginUiState.Success(isLoggedIn = true)
-
                 _navigationEvent.send(
-                    LoginNavigationEvent.Navigate
+                    LoginNavigationEvent.Navigate(
+                        firstName = user.firstName,
+                        lastName = user.lastName,
+                        userId = user.id
+                    )
                 )
-            }else{
+            } else {
                 _uiState.value = LoginUiState.Error(
                     "Invalid email or password"
                 )
