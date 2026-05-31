@@ -2,8 +2,9 @@ package com.example.mobileprogrammingproject.presentation.view_model.recentlyPla
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.mobileprogrammingproject.model.data.repository.mappers.PlaylistRepository
+import com.example.mobileprogrammingproject.model.data.repository.mappers.FirestoreRepository
 import com.example.mobileprogrammingproject.presentation.data.Playlist
+import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -12,7 +13,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class RecentlyPlayedViewModel @Inject constructor(
-    private val playlistRepository: PlaylistRepository
+    private val firestoreRepository: FirestoreRepository
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow<RecentlyPlayedUiState>(RecentlyPlayedUiState.Loading)
@@ -23,12 +24,13 @@ class RecentlyPlayedViewModel @Inject constructor(
     }
 
     private fun loadPlaylists() {
+        val userId = FirebaseAuth.getInstance().currentUser?.uid ?: return
         viewModelScope.launch {
-            playlistRepository.getAllPlaylists().collect { entities ->
-                val playlists = entities.map {
+            firestoreRepository.getPlaylistsForUser(userId).collect { firestorePlaylists ->
+                val playlists = firestorePlaylists.mapIndexed { index, fp ->
                     Playlist(
-                        id = it.id,
-                        title = it.name,
+                        id = index,
+                        title = fp.name,
                         songList = emptyList(),
                         totalDuration = ""
                     )

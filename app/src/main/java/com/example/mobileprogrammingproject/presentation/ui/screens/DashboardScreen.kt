@@ -21,32 +21,33 @@ import com.example.mobileprogrammingproject.presentation.ui.components.Dashboard
 import com.example.mobileprogrammingproject.presentation.ui.components.SetBackgroundGradient
 import com.example.mobileprogrammingproject.presentation.view_model.dashboard.DashboardUiState
 import com.example.mobileprogrammingproject.presentation.view_model.dashboard.DashboardViewModel
+import com.google.firebase.auth.FirebaseAuth
 
 @Composable
 fun DashboardScreen(
     firstName: String,
     lastName: String,
     userId: Int,
+    firebaseUserId: String = "",
     onNavigate: (String) -> Unit,
     viewModel: DashboardViewModel = hiltViewModel()
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
 
     LaunchedEffect(firstName, lastName, userId) {
-        viewModel.loadUser(firstName, lastName, userId)  // ← pass userId here
+        viewModel.loadUser(firstName, lastName, userId)
     }
 
     when (state) {
-        is DashboardUiState.Loading -> {
-            Text("Loading...")
-        }
+        is DashboardUiState.Loading -> Text("Loading...")
         is DashboardUiState.Success -> {
             val successState = state as DashboardUiState.Success
             DashboardDisplay(
                 onNavigate = onNavigate,
                 firstName = successState.firstName,
                 lastName = successState.lastName,
-                userId = successState.userId
+                userId = successState.userId,
+                firebaseUserId = firebaseUserId
             )
         }
         else -> {}
@@ -58,7 +59,8 @@ fun DashboardDisplay(
     onNavigate: (String) -> Unit,
     firstName: String,
     lastName: String,
-    userId: Int = 0
+    userId: Int = 0,
+    firebaseUserId: String = ""
 ) {
     SetBackgroundGradient()
 
@@ -70,12 +72,6 @@ fun DashboardDisplay(
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         item {
-            DashboardOptionsCard("My Playlists", onClick = {
-                onNavigate(Screen.MyPlaylists.createRoute(userId))  // add this
-            })
-        }
-
-        item {
             Text(
                 text = "Music Organizer",
                 style = MaterialTheme.typography.headlineLarge,
@@ -84,6 +80,16 @@ fun DashboardDisplay(
         }
         item {
             Text(text = "Welcome, $firstName $lastName")
+        }
+        item {
+            DashboardOptionsCard("My Playlists", onClick = {
+                onNavigate(Screen.MyPlaylists.createRoute(userId, firebaseUserId))
+            })
+        }
+        item {
+            DashboardOptionsCard("Public Playlists", onClick = {
+                onNavigate(Screen.PublicPlaylists.route)
+            })
         }
         item {
             DashboardOptionsCard("View All Playlists", onClick = {
@@ -96,14 +102,15 @@ fun DashboardDisplay(
             })
         }
         item {
-            DashboardOptionsCard("Log In", onClick = {
-                onNavigate(Screen.Login.route)
+            DashboardOptionsCard("Recently Played", onClick = {
+                onNavigate(Screen.RecentlyPlayed.route)
             })
         }
         item {
-            DashboardOptionsCard("Sign In", onClick = {
+            DashboardOptionsCard("Logout", onClick = {
+                FirebaseAuth.getInstance().signOut()
                 onNavigate(Screen.SignIn.route)
-            })
+            }, isDestructive = true)
         }
     }
 }

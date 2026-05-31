@@ -1,6 +1,7 @@
 package com.example.mobileprogrammingproject.presentation.ui.screens
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -71,8 +72,10 @@ fun SignInScreen(navController: NavController, viewModel: RegistrationViewModel 
             when(event){
                 is RegistrationNavigationEvent.Navigate -> {
                     navController.navigate(
-                        Screen.Dashboard.createRoute(event.firstName, event.lastName, event.userId)
-                    )
+                        Screen.Dashboard.createRoute(event.firstName, event.lastName, event.userId, event.firebaseUserId)
+                    ){
+                        popUpTo(0) { inclusive = true }
+                    }
                 }
                 else -> {}
             }
@@ -92,6 +95,7 @@ fun SignInScreen(navController: NavController, viewModel: RegistrationViewModel 
     }
 
     SignInDisplay(
+        navController = navController,
         snackBarHostState = snackBarHostState,
         name = name,
 
@@ -112,6 +116,7 @@ fun SignInScreen(navController: NavController, viewModel: RegistrationViewModel 
 
 @Composable
 fun SignInDisplay(
+    navController: NavController,
     snackBarHostState: SnackbarHostState,
     name: String,
     lastName: String,
@@ -165,6 +170,12 @@ fun SignInDisplay(
                 style = MaterialTheme.typography.headlineLarge,
                 fontWeight = FontWeight.Bold
             )
+            Button(modifier = Modifier.fillMaxWidth(),
+                enabled = isValidForm,
+                onClick = onSignInClick,
+            ){
+                Text("Sign in")
+            }
             Column(modifier = Modifier
                 .fillMaxWidth(),
                 horizontalAlignment = Alignment.CenterHorizontally) {
@@ -208,14 +219,16 @@ fun SignInDisplay(
                     .fillMaxWidth()
                     .height(16.dp))
 
-                Button(modifier = Modifier.fillMaxWidth(),
-                    enabled = isValidForm,
-                    onClick = onSignInClick,
-                ){
-                    Text("Sign in")
-                }
 
-                Text(text = "Already have an account? Log in here.")
+
+                Text(
+                    text = "Already have an account? Log in here.",
+                    color = MaterialTheme.colorScheme.primary,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.clickable {
+                        navController.navigate(Screen.Login.route)
+                    }
+                )
             }
         }
     }

@@ -7,45 +7,56 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
-import com.example.mobileprogrammingproject.presentation.ui.screens.AboutUsScreen
-import com.example.mobileprogrammingproject.presentation.ui.screens.DashboardScreen
-import com.example.mobileprogrammingproject.presentation.ui.screens.LogInScreen
-import com.example.mobileprogrammingproject.presentation.ui.screens.MyPlaylistsScreen
-import com.example.mobileprogrammingproject.presentation.ui.screens.PlaylistDetailScreen
-import com.example.mobileprogrammingproject.presentation.ui.screens.RecentlyPlayedScreen
-import com.example.mobileprogrammingproject.presentation.ui.screens.SignInScreen
-import com.example.mobileprogrammingproject.presentation.ui.screens.SongDetailsScreen
-import com.example.mobileprogrammingproject.presentation.ui.screens.PlaylistSongsScreen
+import com.example.mobileprogrammingproject.presentation.ui.screens.*
 
 @Composable
 fun AppNavGraph(
     navController: NavHostController,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    startDestination: String = Screen.SignIn.route
+
 ) {
     NavHost(
         navController = navController,
-        startDestination = Screen.SignIn.route,
+        startDestination = startDestination,
         modifier = modifier
     ) {
-        composable(Screen.AboutUsScreen.route) {
-            AboutUsScreen()
-        }
+        composable(Screen.AboutUsScreen.route) { AboutUsScreen() }
 
         composable(
             route = Screen.Dashboard.route,
             arguments = listOf(
                 navArgument("firstName") { type = NavType.StringType },
                 navArgument("lastName") { type = NavType.StringType },
-                navArgument("userId") { type = NavType.IntType }
+                navArgument("userId") { type = NavType.IntType },
+                navArgument("firebaseUserId") { type = NavType.StringType }
             )
         ) { backStackEntry ->
             val firstName = backStackEntry.arguments?.getString("firstName") ?: ""
             val lastName = backStackEntry.arguments?.getString("lastName") ?: ""
             val userId = backStackEntry.arguments?.getInt("userId") ?: 0
+            val firebaseUserId = backStackEntry.arguments?.getString("firebaseUserId") ?: ""
             DashboardScreen(
                 firstName = firstName,
                 lastName = lastName,
                 userId = userId,
+                firebaseUserId = firebaseUserId,
+                onNavigate = { navController.navigate(it) }
+            )
+        }
+
+        composable(
+            route = Screen.MyPlaylists.route,
+            arguments = listOf(
+                navArgument("userId") { type = NavType.IntType },
+                navArgument("firebaseUserId") { type = NavType.StringType }
+            )
+        ) { backStackEntry ->
+            val userId = backStackEntry.arguments?.getInt("userId") ?: 0
+            val firebaseUserId = backStackEntry.arguments?.getString("firebaseUserId") ?: ""
+            MyPlaylistsScreen(
+                userId = userId,
+                firebaseUserId = firebaseUserId,
                 onNavigate = { navController.navigate(it) }
             )
         }
@@ -62,37 +73,11 @@ fun AppNavGraph(
             PlaylistSongsScreen(playlistId = playlistId, playlistName = playlistName)
         }
 
-        composable(Screen.Login.route) {
-            LogInScreen(navController)
-        }
-
-        composable(Screen.PlaylistDetails.route) {
-            PlaylistDetailScreen()
-        }
-
-        composable(
-            route = Screen.MyPlaylists.route,
-            arguments = listOf(
-                navArgument("userId") { type = NavType.IntType }
-            )
-        ) { backStackEntry ->
-            val userId = backStackEntry.arguments?.getInt("userId") ?: 0
-            MyPlaylistsScreen(
-                userId = userId,
-                onNavigate = { navController.navigate(it) }
-            )
-        }
-
-        composable(Screen.RecentlyPlayed.route) {
-            RecentlyPlayedScreen()
-        }
-
-        composable(Screen.SignIn.route) {
-            SignInScreen(navController)
-        }
-
-        composable(Screen.SongSearch.route) {
-            SongDetailsScreen()
-        }
+        composable(Screen.Login.route) { LogInScreen(navController) }
+        composable(Screen.PlaylistDetails.route) { PlaylistDetailScreen() }
+        composable(Screen.PublicPlaylists.route) { PublicPlaylistsScreen() }
+        composable(Screen.RecentlyPlayed.route) { RecentlyPlayedScreen() }
+        composable(Screen.SignIn.route) { SignInScreen(navController) }
+        composable(Screen.SongSearch.route) { SongDetailsScreen() }
     }
 }
