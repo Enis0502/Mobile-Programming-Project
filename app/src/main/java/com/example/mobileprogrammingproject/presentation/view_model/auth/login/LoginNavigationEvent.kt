@@ -4,6 +4,8 @@ sealed interface LoginNavigationEvent {
     data class Navigate(
         val firstName: String,
         val lastName: String,
-        val userId: Int
+        val userId: Int,
+        val firebaseUserId: String
+
     ) : LoginNavigationEvent
 }

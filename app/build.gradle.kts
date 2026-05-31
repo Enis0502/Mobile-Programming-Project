@@ -4,6 +4,9 @@ plugins {
 
     id("com.google.devtools.ksp")
     id("com.google.dagger.hilt.android")
+    // Add the Google services Gradle plugin
+    id("com.google.gms.google-services")
+
 }
 
 android {
@@ -67,6 +70,24 @@ dependencies {
     implementation("androidx.room:room-runtime:$roomVersion")
     implementation("androidx.room:room-ktx:$roomVersion")
     ksp("androidx.room:room-compiler:$roomVersion")
+
+    // Retrofit - HTTP client abstraction
+    implementation("com.squareup.retrofit2:retrofit:2.11.0")
+
+    // Gson converter
+    implementation("com.squareup.retrofit2:converter-gson:2.11.0")
+
+    // OkHttp - the underlying HTTP engine
+    implementation("com.squareup.okhttp3:okhttp:4.12.0")
+
+    // Logging interceptor - prints requests/responses in Logcat
+    implementation("com.squareup.okhttp3:logging-interceptor:4.12.0")
+
+    // Firebase BOM
+    implementation(platform("com.google.firebase:firebase-bom:34.14.0"))
+    // Auth and Firestore
+    implementation("com.google.firebase:firebase-auth:23.2.0")
+    implementation("com.google.firebase:firebase-firestore:25.1.4")
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

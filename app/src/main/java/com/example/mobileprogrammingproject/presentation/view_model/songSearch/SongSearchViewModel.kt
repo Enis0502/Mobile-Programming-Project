@@ -44,6 +44,7 @@ class SongSearchViewModel @Inject constructor(
                     )
                 }
         }
+        _searchQuery.value = ""
     }
 
     fun searchSongs(query: String) {

@@ -1,6 +1,7 @@
 package com.example.mobileprogrammingproject.presentation.ui.components
 
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.List
 import androidx.compose.material.icons.filled.PlayArrow
@@ -17,6 +18,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.mobileprogrammingproject.presentation.navigation.Screen
+import com.google.firebase.auth.FirebaseAuth
 
 @Composable
 fun BottomNavBar(navController: NavHostController) {
@@ -26,15 +28,17 @@ fun BottomNavBar(navController: NavHostController) {
 
     NavigationBar {
         NavigationBarItem(
-            selected = currentRoute == Screen.PlaylistDetails.route,
+            selected = currentRoute?.startsWith("dashboard_screen") == true,
             onClick = {
-                navController.navigate(Screen.PlaylistDetails.route) {
+                navController.navigate(
+                    Screen.Dashboard.createRoute("User", "", 0, FirebaseAuth.getInstance().currentUser?.uid ?: "")
+                ) {
                     popUpTo(navController.graph.startDestinationId)
                     launchSingleTop = true
                 }
             },
-            icon = { Icon(Icons.Default.List, contentDescription = "Playlist") },
-            label = { Text("Playlist") }
+            icon = { Icon(Icons.Default.Home, contentDescription = "Dashboard") },
+            label = { Text("Dashboard") }
         )
 
         NavigationBarItem(

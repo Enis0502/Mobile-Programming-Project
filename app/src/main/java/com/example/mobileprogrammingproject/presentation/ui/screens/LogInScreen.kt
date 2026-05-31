@@ -63,8 +63,11 @@ fun LogInScreen(navController: NavController, viewModel: LoginViewModel = hiltVi
             when(event){
                 is LoginNavigationEvent.Navigate -> {
                     navController.navigate(
-                        Screen.Dashboard.createRoute(event.firstName, event.lastName, event.userId)
-                    )
+                        Screen.Dashboard.createRoute(event.firstName, event.lastName, event.userId, event.firebaseUserId)
+
+                    ){
+                        popUpTo(0) { inclusive = true }
+                    }
                 }
                 else -> {}
             }

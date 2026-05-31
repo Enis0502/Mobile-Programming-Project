@@ -53,9 +53,6 @@ fun SongDetailsScreen(viewModel: SongSearchViewModel = hiltViewModel()){
     var expandedSongId by remember { mutableStateOf<Int?>(null) }
 
     when(state){
-        is SongSearchUiState.Init -> {
-
-        }
         is SongSearchUiState.Success -> {
             val successState = state as SongSearchUiState.Success
             Scaffold(
